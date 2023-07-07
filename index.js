@@ -107,15 +107,13 @@ const fetchInvoice = async ({ relays, zappedPubkey, zappedEventId }) => {
   const userProfile = await getUserProfile(zappedPubkey);
 
   if (!userProfile) {
-    console.log(`no user profile found for ${zappedPubkey}`);
-    return;
+    throw new Error(`no user profile found for ${zappedPubkey}`);
   }
 
   const zapEndpoint = await nip57.getZapEndpoint(userProfile);
 
   if (!zapEndpoint) {
-    console.log(`no zap endpoint found for ${zappedPubkey}`);
-    return;
+    throw new Error(`no zap endpoint found for ${zappedPubkey}`);
   }
 
   const zapRequestEvent = await nip57.makeZapRequest({
@@ -133,8 +131,13 @@ const fetchInvoice = async ({ relays, zappedPubkey, zappedEventId }) => {
     JSON.stringify(signedZapRequestEvent)
   )}&comment=${encodeURIComponent(comment)}`;
   const { data } = await axios(url);
+  const invoice = data.pr;
 
-  return data.pr;
+  if (!invoice) {
+    throw new Error(`failed to retrieve invoice for ${zappedPubkey}`);
+  }
+
+  return invoice;
 };
 
 const zap = async (nostrReactionEvent, relays) => {
