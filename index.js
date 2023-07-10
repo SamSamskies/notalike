@@ -142,9 +142,11 @@ const fetchInvoice = async ({ relays, zappedPubkey, zappedEventId }) => {
 
 const zap = async (nostrReactionEvent, relays) => {
   const zappedPubkey = nostrReactionEvent.tags
+    .slice()
     .reverse()
     .find((tag) => tag[0] === "p")[1];
   const zappedEventId = nostrReactionEvent.tags
+    .slice()
     .reverse()
     .find((tag) => tag[0] === "e")[1];
   const zappedNpub = nip19.npubEncode(zappedPubkey);
