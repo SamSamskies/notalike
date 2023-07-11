@@ -162,12 +162,11 @@ const zap = async (nostrReactionEvent, relays) => {
     const strikePaymentQuoteId = await createStrikePaymentQuote(invoice);
 
     await executeStrikePaymentQuote(strikePaymentQuoteId);
-  } catch (error) {
-    console.error(error);
-  } finally {
     console.log(
       `successfully zapped ${zappedNpub} for note ${zappedNoteId} ${amountInSats} sats 😎\n`
     );
+  } catch (error) {
+    console.error(error);
   }
 };
 
